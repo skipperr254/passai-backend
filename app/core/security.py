@@ -40,4 +40,4 @@ def get_current_user(authorization: str = Header(...)):
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
     
-    return payload["pub"] # user_id
+    return payload["sub"]  # user_id (correct claim)

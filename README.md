@@ -1,1 +1,1 @@
-# passai-backend
+# PassAI Backend

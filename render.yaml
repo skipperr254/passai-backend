@@ -3,7 +3,9 @@ services:
     name: passai-backend
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      apt-get update && apt-get install -y tesseract-ocr
+      pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: SUPABASE_URL
@@ -12,3 +14,5 @@ services:
         sync: false
       - key: CORS_ORIGINS
         value: "*"
+      - key: ENVIRONMENT
+        value: "production"
