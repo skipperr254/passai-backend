@@ -3,7 +3,7 @@ from jose import jwt
 from jose.backends.rsa_backend import RSAKey
 from fastapi import Depends, HTTPException, Header
 
-from core.config import settings
+from app.core.config import settings
 
 JWKS_URL = f"{settings.SUPABASE_URL}/auth/v1/jwks"
 

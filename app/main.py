@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.v1.health import router as health_router
-from api.v1.upload import router as upload_router
-from core.config import settings
+from app.api.v1.health import router as health_router
+from app.api.v1.upload import router as upload_router
+from app.core.config import settings
 
 app = FastAPI(title="Document Processing API", version="1.0.0")
 app.add_middleware(

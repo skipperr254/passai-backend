@@ -2,6 +2,7 @@ services:
   - type: web
     name: passai-backend
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -9,3 +10,5 @@ services:
         sync: false
       - key: SUPABASE_KEY
         sync: false
+      - key: CORS_ORIGINS
+        value: "*"

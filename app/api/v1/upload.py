@@ -1,11 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 import uuid
 
-from utils.supabase import supabase
-from services.pdf import extract_pdf_text
-from services.docx import extract_docx_text
-from services.pptx import extract_pptx_text
-from core.security import get_current_user
+from app.utils.supabase import supabase
+from app.services.pdf import extract_pdf_text
+from app.services.docx import extract_docx_text
+from app.services.pptx import extract_pptx_text
+from app.core.security import get_current_user
 
 router = APIRouter()
 
