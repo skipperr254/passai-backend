@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     # Supabase configuration
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
+    SUPABASE_JWT_SECRET: str = ""
     
     # CORS configuration
     CORS_ORIGINS: str = "*"  # Comma-separated origins for production
@@ -37,6 +38,8 @@ class Settings(BaseSettings):
             raise ValueError("SUPABASE_URL is required")
         if not self.SUPABASE_KEY:
             raise ValueError("SUPABASE_KEY is required")
+        if not self.SUPABASE_JWT_SECRET:
+            raise ValueError("SUPABASE_JWT_SECRET is required")
 
     class Config:
         env_file = str(ENV_FILE)

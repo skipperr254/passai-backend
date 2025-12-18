@@ -1,43 +1,34 @@
-import requests
-from jose import jwt
-from jose.backends.rsa_backend import RSAKey
-from fastapi import Depends, HTTPException, Header
+from jose import jwt, JWTError
+from fastapi import HTTPException, Header
 
 from app.core.config import settings
 
-JWKS_URL = f"{settings.SUPABASE_URL}/auth/v1/jwks"
-
 def get_current_user(authorization: str = Header(...)):
+    """Validate JWT token from Supabase and return user ID"""
     if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid authorization header.")
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+    
     token = authorization.replace("Bearer ", "")
-
-    # Fetch JWKS (cached later for performance in production)
-    jwks = requests.get(JWKS_URL).json()
-
-    # Validate JWT
-    try:
-        claims = jwt.get_unverified_claims(token)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token claims.")
-    
-    # Get the kid from the token header
-    header = jwt.get_unverified_header(token)
-    kid = header.get("kid")
-
-    # Find the corresponding public key
-    key = None
-    for k in jwks["keys"]:
-        if k["kid"] == kid:
-            key = RSAKey(k, algorithm='RS256')
-            break
-    
-    if not key:
-        raise HTTPException(status_code=401, detail="Key not found.")
     
     try:
-        payload = jwt.decode(token, key=key, algorithms=["RS256"], audience="authenticated")
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    
-    return payload["sub"]  # user_id (correct claim)
+        # Decode and validate JWT using Supabase JWT secret
+        payload = jwt.decode(
+            token,
+            settings.SUPABASE_JWT_SECRET,
+            algorithms=["HS256"],
+            audience="authenticated"
+        )
+        
+        # Extract user ID from sub claim
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token: missing user ID")
+        
+        return user_id
+        
+    except JWTError as e:
+        print(f"JWT validation error: {e}")
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    except Exception as e:
+        print(f"Unexpected authentication error: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
