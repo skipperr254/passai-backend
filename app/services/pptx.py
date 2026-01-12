@@ -8,4 +8,6 @@ def extract_pptx_text(bytes_data: bytes) -> str:
         for shape in slide.shapes:
             if hasattr(shape, "text"):
                 text += shape.text + "\n"
+    # Remove null bytes that PostgreSQL cannot store
+    text = text.replace('\x00', '')
     return text.strip()

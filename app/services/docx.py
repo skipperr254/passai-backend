@@ -6,4 +6,6 @@ def extract_docx_text(bytes_data: bytes) -> str:
     text = ""
     for paragraph in document.paragraphs:
         text += paragraph.text + "\n"
+    # Remove null bytes that PostgreSQL cannot store
+    text = text.replace('\x00', '')
     return text.strip()

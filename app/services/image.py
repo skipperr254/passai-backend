@@ -19,6 +19,8 @@ def extract_image_text(bytes_data: bytes) -> str:
     try:
         image = Image.open(BytesIO(bytes_data))
         text = pytesseract.image_to_string(image)
+        # Remove null bytes that PostgreSQL cannot store
+        text = text.replace('\x00', '')
         return text.strip()
     except Exception as e:
         print(f"Image OCR error: {e}")
